@@ -1,6 +1,8 @@
 AzureDocumentDbTypeProvider/.vs/
 AzureDocumentDbTypeProvider/packages/
-AzureDocumentDbTypeProvider/bin/
-AzureDocumentDbTypeProvider/obj/
-/.vs/AzureDocumentDbTypeProvider/v14/.suo
-/packages
+*/bin/*
+*/obj/*
+*.suo
+*/.vs
+*/packages/*
+packages/
