@@ -14,8 +14,14 @@ Target "Default" (fun _ ->
    trace "Hello World from FAKE"
 )
 
+Target "BuildApp" (fun _ ->
+    !!("*.sln")
+    |> MSBuildRelease "" "Build"
+    |> Log "AppBuild-Output: ")
+
 // Dependencies
 "Clean"
+  ==> "BuildApp"
   ==> "Default"
 
 // start build
