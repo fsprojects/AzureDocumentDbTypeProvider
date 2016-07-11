@@ -1,0 +1,11 @@
+AzureDocumentDbTypeProvider/.vs/
+AzureDocumentDbTypeProvider/packages/
+AzureDocumentDbTypeProvider.Tests/AzureDocumentDbTypeProvider.Tests/obj/
+*/bin/*
+*/obj/*
+*.suo
+*/.vs
+*/packages/*
+packages/
+.paket/paket.exe
+.fake
