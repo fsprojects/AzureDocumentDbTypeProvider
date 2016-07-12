@@ -4,3 +4,5 @@ source https://www.nuget.org/api/v2/
 nuget FAKE
 nuget Nuget.CommandLine
 nuget Microsoft.Azure.DocumentDB
+nuget xunit
+nuget FSharp.Core
