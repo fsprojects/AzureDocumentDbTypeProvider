@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 AzureDocumentDbTypeProvider/.vs/
 AzureDocumentDbTypeProvider/packages/
 AzureDocumentDbTypeProvider.Tests/AzureDocumentDbTypeProvider.Tests/obj/
@@ -8,4 +9,14 @@ AzureDocumentDbTypeProvider.Tests/AzureDocumentDbTypeProvider.Tests/obj/
 */packages/*
 packages/
 .paket/paket.exe
+=======
+.vs
+bin
+obj
+.test
+packages
+*.suo
+*/.vs
+.paket
+>>>>>>> dev
 .fake
