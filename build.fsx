@@ -35,11 +35,9 @@ Target "BuildDebug" (fun _ ->
 
 Target "Test" (fun _ ->
     trace "Running Tests"
-    !! (testDir @@ "*Tests*.dll")
-    |> Seq.map(fun x ->
-            trace x
-            x)
-    |> xUnit id
+    let testDlls = !! (testDir @@ "*Tests.dll")
+    testDlls |> Seq.iter (fun i -> trace i)
+    testDlls |> xUnit id
 )
 
 // Dependencies

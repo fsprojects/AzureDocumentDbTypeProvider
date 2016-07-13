@@ -1,8 +1,11 @@
 redirects: on
 source https://www.nuget.org/api/v2/
 
+
 nuget FAKE
 nuget Nuget.CommandLine
 nuget Microsoft.Azure.DocumentDB
-nuget xunit
+nuget FsUnit.xUnit
+nuget xunit 1.9.2
+nuget xunit.runners 1.9.2
 nuget FSharp.Core
