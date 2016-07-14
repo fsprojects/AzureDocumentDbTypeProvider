@@ -1,22 +1,13 @@
-<<<<<<< HEAD
-AzureDocumentDbTypeProvider/.vs/
-AzureDocumentDbTypeProvider/packages/
-AzureDocumentDbTypeProvider.Tests/AzureDocumentDbTypeProvider.Tests/obj/
-*/bin/*
-*/obj/*
-*.suo
-*/.vs
-*/packages/*
-packages/
-.paket/paket.exe
-=======
-.vs
-bin
-obj
+[Bb]in/
+[Oo]bj/
 .test
 packages
+
 *.suo
 */.vs
-.paket
->>>>>>> dev
+
+.paket/paket.exe
+paket-files/
+
 .fake
+
