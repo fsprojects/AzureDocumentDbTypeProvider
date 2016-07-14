@@ -1,9 +1,13 @@
-.vs
-bin
-obj
+[Bb]in/
+[Oo]bj/
 .test
 packages
+
 *.suo
 */.vs
-.paket
+
+.paket/paket.exe
+paket-files/
+
 .fake
+
