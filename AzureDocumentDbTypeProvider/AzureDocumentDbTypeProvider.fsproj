@@ -75,7 +75,7 @@
       <Link>paket-files/ProvidedTypes.fs</Link>
     </Compile>
     <Compile Include="AssemblyInfo.fs" />
-    <None Include="Script.fsx" />
+    <Compile Include="DocumentDbTypeProvider.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
