@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Name>AzureDocumentDbTypeProvider</Name>
@@ -40,6 +40,26 @@
     <Prefer32Bit />
     <OtherFlags />
   </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="../paket-files/fsprojects/FSharp.TypeProviders.StarterPack/src/ProvidedTypes.fsi">
+      <Link>paket-files/ProvidedTypes.fsi</Link>
+    </Compile>
+    <Compile Include="../paket-files/fsprojects/FSharp.TypeProviders.StarterPack/src/ProvidedTypes.fs">
+      <Link>paket-files/ProvidedTypes.fs</Link>
+    </Compile>
+    <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="DocumentDbTypeProvider.fs" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '11.0'">
@@ -65,27 +85,6 @@
       </PropertyGroup>
     </When>
   </Choose>
-  <ItemGroup>
-    <Compile Include="..\paket-files\fsprojects\FSharp.TypeProviders.StarterPack\src\ProvidedTypes.fsi">
-      <Paket>True</Paket>
-      <Link>paket-files/ProvidedTypes.fsi</Link>
-    </Compile>
-    <Compile Include="..\paket-files\fsprojects\FSharp.TypeProviders.StarterPack\src\ProvidedTypes.fs">
-      <Paket>True</Paket>
-      <Link>paket-files/ProvidedTypes.fs</Link>
-    </Compile>
-    <Compile Include="AssemblyInfo.fs" />
-    <Compile Include="DocumentDbTypeProvider.fs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
-  </ItemGroup>
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6' Or $(TargetFrameworkVersion) == 'v4.6.1' Or $(TargetFrameworkVersion) == 'v4.6.2' Or $(TargetFrameworkVersion) == 'v4.6.3')">
       <ItemGroup>

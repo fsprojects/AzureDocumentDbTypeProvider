@@ -5,8 +5,8 @@ open System
 //As there is no local test emulator available for documentdb we must perform integration tests against a live account
 //
 //Enter the details below:
-let [<Literal>] accountEndpointUri = """{Insert your test account endpoint uri here}"""
-let [<Literal>] accountKey = """{Insert your test account key here}"""
+let accountEndpointUri = """{Insert your test account endpoint uri here}"""
+let accountKey = """{Insert your test account key here}"""
 
 
 let validateTestAccountCredentials () = 
