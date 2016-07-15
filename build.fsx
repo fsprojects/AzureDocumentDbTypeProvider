@@ -3,6 +3,8 @@
 open Fake
 open Fake.Testing
 
+RestorePackages()
+
 // Properties
 let buildDirs = [ "AzureDocumentDbTypeProvider/bin"; "AzureDocumentDbTypeProvider.Tests/bin" ]
 let testDir = "./.test/"

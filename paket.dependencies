@@ -2,10 +2,12 @@ redirects: on
 source https://www.nuget.org/api/v2/
 
 nuget FAKE
+nuget Newtonsoft.Json
 nuget Nuget.CommandLine
 nuget Microsoft.Azure.DocumentDB
 nuget FsUnit.xUnit
 nuget xunit 1.9.2
+nuget xunit.runner.visualstudio
 nuget xunit.runners 1.9.2
 nuget FSharp.Core
 
