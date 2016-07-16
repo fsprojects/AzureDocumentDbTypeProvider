@@ -766,7 +766,10 @@
       <Link>paket-files/ProvidedTypes.fs</Link>
     </Compile>
     <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="Config.fs" />
+    <Compile Include="Database.fs" />
     <Compile Include="DocumentDbTypeProvider.fs" />
+    <None Include="paket.references" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
