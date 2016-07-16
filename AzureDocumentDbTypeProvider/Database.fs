@@ -5,7 +5,7 @@ open System
 open Microsoft.Azure.Documents
 open ProviderImplementation.ProvidedTypes
 
-type ProvidedDatabaseType internal(sdkObj:Database) = 
+type ProvidedDatabaseType (sdkObj:Database) = 
     ///Name of the DocumentDb Database
     member __.Name = sdkObj.Id
 
