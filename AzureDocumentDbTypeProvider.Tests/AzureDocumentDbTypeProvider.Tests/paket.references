@@ -1,7 +1,5 @@
 FSharp.Core
-xunit
 xunit.runners
 Microsoft.Azure.DocumentDB
 xunit.runner.visualstudio
 FsUnit.xUnit
-Newtonsoft.Json

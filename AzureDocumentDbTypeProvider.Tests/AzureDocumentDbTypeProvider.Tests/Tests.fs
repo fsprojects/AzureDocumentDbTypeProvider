@@ -5,7 +5,7 @@ open FsUnit.Xunit
 open FSharp.Azure.DocumentDbTypeProvider
 open TestAccountConfig
 
-type Tp = DocumentDbTypeProvider<TestAccountConfig.accountEndpointUri,TestAccountConfig.accountKey>
+type Tp = DocumentDbTypeProvider<TestAccountConfig.AccountEndpointUri, TestAccountConfig.AccountKey>
 
 
 [<Fact>]
