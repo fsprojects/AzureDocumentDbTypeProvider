@@ -7,14 +7,11 @@ open TestAccountConfig
 
 type Tp = DocumentDbTypeProvider<TestAccountConfig.AccountEndpointUri, TestAccountConfig.AccountKey>
 
-
-[<Fact>]
-let ``Can Run Tests``() = Assert.True(true)
-
 [<Fact>]
 let ``Can connect to test account``() = 
     TestAccountConfig.validateTestAccountCredentials ()
 
+[<Fact>]
 let ``'Test1' database is listed``() = 
     let t1 = Tp.test1
-    ()
+    () //(compilation alone indicates success)

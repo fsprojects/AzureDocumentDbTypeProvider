@@ -18,9 +18,7 @@ type public DocumentDbTypeProvider(config: TypeProviderConfig) as this =
         let acProvidedType = ProvidedTypeDefinition(thisAssembly, namespaceName, typeName, baseType = Some typeof<obj>)
         acProvidedType.AddMember(ProvidedConstructor(parameters = [], InvokeCode = (fun args -> <@@ null @@>)))
         
-        let getDbProperties () = 
-            Database.listDbs (args.[0] :?> string) (args.[1]:?> string)
-            |> List.map(fun d -> new ProvidedProperty(d.Name, typeof<string>, IsStatic = true, GetterCode = (fun _ -> <@@ "Test db name" @@>)))
+        let getDbProperties () = Database.listDbs (args.[0] :?> string) (args.[1]:?> string)
         acProvidedType.AddMembers(getDbProperties())
         acProvidedType
 
