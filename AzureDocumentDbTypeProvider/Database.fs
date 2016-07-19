@@ -11,9 +11,9 @@ type DbType
     member __.Name with get () = name 
 
 let getDbListing acEndpoint (acKey:string) = 
-    let createDbType acEndPoint (acKey:string) dbName = 
+    let createDbType dbName = 
         let dbType = ProvidedTypeDefinition(dbName + "Db", Some typeof<DbType>, HideObjectMethods = true)
-        let dbProp = ProvidedProperty(dbName, dbType, GetterCode = (fun _ -> <@@ DbType(dbName) @@>))
+        let dbProp = ProvidedProperty(dbName, typeof<string>, GetterCode = (fun _ -> <@@ dbName @@>), IsStatic=true)
 
 //        let pProp = ProvidedProperty(dbName,typeof<string>, IsStatic=false, GetterCode = fun [baseClient] ->
 //    //    let pMethod = ProvidedMethod(dbId,[],typeof<string>, IsStatic = true, InvokeCode = fun [baseClient] ->
@@ -36,7 +36,7 @@ let getDbListing acEndpoint (acKey:string) =
 
     (new DocumentClient(Uri(acEndpoint),acKey)).CreateDatabaseQuery()
     |> List.ofSeq
-    |> List.map (fun d -> createDbType acEndpoint acKey d.Id)
+    |> List.map (fun d -> createDbType d.Id)
     |> dbListingType.AddMembers
 
 
