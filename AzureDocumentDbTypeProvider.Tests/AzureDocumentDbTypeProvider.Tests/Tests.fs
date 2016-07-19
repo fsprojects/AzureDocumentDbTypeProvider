@@ -15,3 +15,9 @@ let ``Can connect to test account``() =
 let ``'Test1' database is listed``() = 
     let t1 = Tp.Databases.test1
     () //(compilation alone indicates success)
+
+[<Fact>]
+let ``Can access .Name property of 'Test1' database``() = 
+    let t1 = Tp.Databases.test1
+    Assert.Equal<string>("test1",t1)
+    
