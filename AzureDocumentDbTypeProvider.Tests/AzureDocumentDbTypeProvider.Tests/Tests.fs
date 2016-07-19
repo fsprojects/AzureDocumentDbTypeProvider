@@ -13,5 +13,5 @@ let ``Can connect to test account``() =
 
 [<Fact>]
 let ``'Test1' database is listed``() = 
-    let t1 = Tp.test1
+    let t1 = Tp.Databases.test1
     () //(compilation alone indicates success)

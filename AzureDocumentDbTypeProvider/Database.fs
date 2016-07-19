@@ -16,17 +16,41 @@ type DbType
 
 let createDbType (sdkObj:Database) = 
     let dbType = ProvidedTypeDefinition(sdkObj.Id, Some typeof<DbType>, HideObjectMethods = true)
-    dbType.AddMember(ProvidedConstructor(parameters = [], InvokeCode = (fun args -> <@@ null @@>)))
-    let nameProp = ProvidedProperty("Name",typeof<string>,GetterCode = fun _ -> <@@ sdkObj.Id @@>)
-    
-    dbType.AddMember(nameProp)
-    dbType
+    let p1 = ProvidedParameter("Database",typeof<Database>)
+    dbType.AddMember(ProvidedConstructor(parameters = [p1], InvokeCode = (fun [p1] -> 
+        <@@ 
+            let db = ((%%p1:obj) :?> Database)
+            DbType(db) 
+         @@>)))
 
-let listDbs acEndpoint (acKey:string) = 
-    let client = new DocumentClient((new Uri(acEndpoint)), acKey)
-    client.CreateDatabaseQuery() 
-    |> List.ofSeq 
+    let pProp = ProvidedProperty(sdkObj.Id,typeof<DbType>, IsStatic=true, GetterCode = fun args ->
+        match args with
+        | [clientParam] ->
+            <@@
+                let client = ((%%clientParam:obj) :?> DocumentClient)
+                client.CreateDatabaseQuery() |> Seq.find(fun d -> d.Id = sdkObj.Id) //FIXME - lets not list all the dbs everytime!!
+            @@>
+        | _ -> <@@ null @@>)
+
+    pProp
+
+    
+    
+     
+    
+
+let getDbListing acEndpoint (acKey:string) = 
+    let dbListingType = ProvidedTypeDefinition("Databases",Some typeof<obj>, HideObjectMethods = true)
+    ProvidedConstructor(parameters = [], InvokeCode = (fun args -> <@@ new DocumentClient(Uri(acEndpoint),acKey) @@>))
+    |> dbListingType.AddMember
+
+    (new DocumentClient(Uri(acEndpoint),acKey)).CreateDatabaseQuery()
+    |> List.ofSeq
     |> List.map createDbType
+    |> dbListingType.AddMembers
+
+
+    dbListingType
 
     
     

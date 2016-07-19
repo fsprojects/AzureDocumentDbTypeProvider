@@ -6,6 +6,7 @@ open System.Reflection
 open System
 open Config
 open Database
+open Microsoft.Azure.Documents.Client
 
 [<TypeProvider>]
 type public DocumentDbTypeProvider(config: TypeProviderConfig) as this = 
@@ -15,11 +16,17 @@ type public DocumentDbTypeProvider(config: TypeProviderConfig) as this =
     let docDbType = ProvidedTypeDefinition(thisAssembly,namespaceName,"DocumentDbTypeProvider", baseType = Some typeof<obj>)
 
     let initFn (typeName : string) (args : obj []) = 
+        let acEndpoint, acKey = (args.[0] :?> string), (args.[1]:?> string) 
+
         let acProvidedType = ProvidedTypeDefinition(thisAssembly, namespaceName, typeName, baseType = Some typeof<obj>)
         acProvidedType.AddMember(ProvidedConstructor(parameters = [], InvokeCode = (fun args -> <@@ null @@>)))
         
-        let getDbProperties () = Database.listDbs (args.[0] :?> string) (args.[1]:?> string)
-        acProvidedType.AddMembers(getDbProperties())
+        let docDbClient = new ProvidedProperty("DocumentClient", typeof<DocumentClient>, IsStatic = true, GetterCode = (fun _ -> <@@ new DocumentClient(Uri(acEndpoint),acKey) @@>))
+        docDbClient.AddXmlDoc "Gets a DocumentDb SDK client object for this connection"
+        acProvidedType.AddMember(docDbClient)
+
+        Database.getDbListing acEndpoint acKey
+        |> acProvidedType.AddMember
         acProvidedType
 
     let parameters = 
@@ -28,6 +35,7 @@ type public DocumentDbTypeProvider(config: TypeProviderConfig) as this =
 
     do
         docDbType.DefineStaticParameters(parameters,initFn)
+        docDbType.AddXmlDoc("The entry type to connect to Azure DocumentDb")
         this.AddNamespace(namespaceName,[docDbType])
 
 [<TypeProviderAssembly>]
