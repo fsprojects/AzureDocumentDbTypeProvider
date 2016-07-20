@@ -10,7 +10,11 @@ type DbType
     
     member __.Name with get () = name 
 
-let getDbListing acEndpoint (acKey:string) = 
+let addDbListing acEndpoint (acKey:string) (domainType:ProvidedTypeDefinition) = 
+    let dbListingType = ProvidedTypeDefinition("DatabaseListing", Some typeof<obj>, HideObjectMethods = true)
+    domainType.AddMember dbListingType
+
+    let prop = ProvidedProperty("Databases", dbListingType, GetterCode = (fun [] -> <@@ () @@>), IsStatic = true )
     let createDbType dbName = 
         let dbType = ProvidedTypeDefinition(dbName + "Db", Some typeof<DbType>, HideObjectMethods = true)
         let dbProp = ProvidedProperty(dbName, typeof<string>, GetterCode = (fun _ -> <@@ dbName @@>), IsStatic=true)
@@ -27,17 +31,19 @@ let getDbListing acEndpoint (acKey:string) =
 //                @@>)
         dbProp
     
-    let dbListingType = ProvidedTypeDefinition("Databases",Some typeof<obj>, HideObjectMethods = true)
+
+    makeProvidedProperty<string> (fun _ -> <@@ "test1" @@>) "test1" true
+    |> dbListingType.AddMember
     
 //    ProvidedConstructor(parameters = [], InvokeCode = (fun [] -> <@@ new DocumentClient( Uri(acEndpoint),acKey) @@>))
 //    |> dbListingType.AddMember
 
     
-
-    (new DocumentClient(Uri(acEndpoint),acKey)).CreateDatabaseQuery()
-    |> List.ofSeq
-    |> List.map (fun d -> createDbType d.Id)
-    |> dbListingType.AddMembers
+//
+//    (new DocumentClient(Uri(acEndpoint),acKey)).CreateDatabaseQuery()
+//    |> List.ofSeq
+//    |> List.map (fun d -> createDbType d.Id)
+//    |> dbListingType.AddMembers
 
 
     dbListingType

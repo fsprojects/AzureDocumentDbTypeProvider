@@ -26,9 +26,8 @@ type public DocumentDbTypeProvider(config: TypeProviderConfig) as this =
         docDbClient.AddXmlDoc "Gets a DocumentDb SDK client object for this connection"
         acProvidedType.AddMember(docDbClient)
 
-        makeProvidedProperty<obj> (fun [] -> <@@ Database.getDbListing acEndpoint acKey @@> ) "Databases" true
-        |> acProvidedType.AddMember
-        acProvidedType
+        addDbListing acEndpoint acKey acProvidedType
+        
 
     let parameters = 
         [ ProvidedStaticParameter("accountEndPointUri", typeof<string>, String.Empty)
