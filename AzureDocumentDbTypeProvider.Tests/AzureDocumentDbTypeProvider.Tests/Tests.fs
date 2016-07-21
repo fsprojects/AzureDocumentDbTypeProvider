@@ -19,6 +19,6 @@ let ``'Test1' database is listed``() =
 [<Fact>]
 let ``Can access .Name property of 'Test1' database``() = 
     let dbs = Tp.Databases
-    let name = dbs.test1
+    let name = dbs.test1.Name
     Assert.Equal<string>("test1",name)
     
