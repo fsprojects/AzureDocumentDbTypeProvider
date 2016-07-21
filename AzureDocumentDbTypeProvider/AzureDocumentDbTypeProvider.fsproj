@@ -73,6 +73,7 @@
     </Compile>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Config.fs" />
+    <Compile Include="Helpers.fs" />
     <Compile Include="Database.fs" />
     <Compile Include="DocumentDbTypeProvider.fs" />
     <None Include="paket.references" />

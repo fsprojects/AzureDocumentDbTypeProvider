@@ -6,53 +6,42 @@ open Microsoft.Azure.Documents
 open ProviderImplementation.ProvidedTypes
 
 type DbType 
-    internal(sdkObj:Database) = 
+    internal(name:string, uri:string,key:string) = 
+    ///Database Name
+    member __.Name with get () = name 
 
-    ///Name of the DocumentDb Database
-    member __.Name = sdkObj.Id
+module DbBuilder = 
+    let createDb dbName acEndpoint acKey = 
+        DbType(dbName,acEndpoint,acKey)
 
-    ///Gets a reference to the underlying Database object from the DocumentDb sdk
-    member __.AsDatabase = sdkObj
+module DbMemberFactory = 
+    let buildDbMembers (dbType:ProvidedTypeDefinition) (domainType:ProvidedTypeDefinition) (uri:string) (pwd:string) (dbName:string) = 
+       dbType.AddMembersDelayed( fun () ->
+            let getName = makeProvidedProperty<string> (fun args -> <@@ dbName @@>) "Name" false
+            [getName]
+       )
 
-let createDbType (sdkObj:Database) = 
-    let dbType = ProvidedTypeDefinition(sdkObj.Id, Some typeof<DbType>, HideObjectMethods = true)
-    let p1 = ProvidedParameter("Database",typeof<Database>)
-    dbType.AddMember(ProvidedConstructor(parameters = [p1], InvokeCode = (fun [p1] -> 
-        <@@ 
-            let db = ((%%p1:obj) :?> Database)
-            DbType(db) 
-         @@>)))
 
-    let pProp = ProvidedProperty(sdkObj.Id,typeof<DbType>, IsStatic=true, GetterCode = fun args ->
-        match args with
-        | [clientParam] ->
-            <@@
-                let client = ((%%clientParam:obj) :?> DocumentClient)
-                client.CreateDatabaseQuery() |> Seq.find(fun d -> d.Id = sdkObj.Id) //FIXME - lets not list all the dbs everytime!!
-            @@>
-        | _ -> <@@ null @@>)
-
-    pProp
-
+let buildDbListing acEndpoint (acKey:string) (domainType:ProvidedTypeDefinition) = 
+    let createDbType dbName = 
+        let dbType = ProvidedTypeDefinition(dbName + "Db", Some typeof<DbType>, HideObjectMethods = true)
+        domainType.AddMember dbType
+        DbMemberFactory.buildDbMembers dbType domainType acEndpoint acKey dbName
+        let dbProp = ProvidedProperty(dbName, dbType, GetterCode = (fun _ -> <@@ DbBuilder.createDb dbName acEndpoint acKey @@>))
+        dbProp
     
+    let dbListingType = ProvidedTypeDefinition("DatabaseListing", Some typeof<obj>, HideObjectMethods = true)
+    dbListingType.AddXmlDoc("Lists all databases in the DocumentDb account")
+    let propGenFn = 
+        (fun () -> 
+            new DocumentClient(Uri(acEndpoint),acKey)
+            |> (fun d -> d.CreateDatabaseQuery())
+            |> Seq.map(fun d -> createDbType d.Id )
+            |> List.ofSeq)
+    dbListingType.AddMembersDelayed propGenFn
     
-     
+    domainType.AddMember(dbListingType)
+
+    let dbListingProp = ProvidedProperty("Databases", dbListingType, GetterCode = (fun [] -> <@@ () @@>), IsStatic = true )
     
-
-let getDbListing acEndpoint (acKey:string) = 
-    let dbListingType = ProvidedTypeDefinition("Databases",Some typeof<obj>, HideObjectMethods = true)
-    ProvidedConstructor(parameters = [], InvokeCode = (fun args -> <@@ new DocumentClient(Uri(acEndpoint),acKey) @@>))
-    |> dbListingType.AddMember
-
-    (new DocumentClient(Uri(acEndpoint),acKey)).CreateDatabaseQuery()
-    |> List.ofSeq
-    |> List.map createDbType
-    |> dbListingType.AddMembers
-
-
-    dbListingType
-
-    
-    
-    
-
+    dbListingProp

@@ -1,6 +1,7 @@
 ﻿namespace ProviderImplementation
 
 open ProviderImplementation.ProvidedTypes
+open ProviderImplementation.ProvidedTypes.ProvidedTypesHelpers
 open Microsoft.FSharp.Core.CompilerServices
 open System.Reflection
 open System
@@ -21,12 +22,16 @@ type public DocumentDbTypeProvider(config: TypeProviderConfig) as this =
         let acProvidedType = ProvidedTypeDefinition(thisAssembly, namespaceName, typeName, baseType = Some typeof<obj>)
         acProvidedType.AddMember(ProvidedConstructor(parameters = [], InvokeCode = (fun args -> <@@ null @@>)))
         
+        let domainTypes = ProvidedTypeDefinition("Domain", Some typeof<obj>)
+        acProvidedType.AddMember(domainTypes)
+
         let docDbClient = new ProvidedProperty("DocumentClient", typeof<DocumentClient>, IsStatic = true, GetterCode = (fun _ -> <@@ new DocumentClient(Uri(acEndpoint),acKey) @@>))
         docDbClient.AddXmlDoc "Gets a DocumentDb SDK client object for this connection"
         acProvidedType.AddMember(docDbClient)
 
-        Database.getDbListing acEndpoint acKey
+        buildDbListing acEndpoint acKey domainTypes
         |> acProvidedType.AddMember
+        
         acProvidedType
 
     let parameters = 
