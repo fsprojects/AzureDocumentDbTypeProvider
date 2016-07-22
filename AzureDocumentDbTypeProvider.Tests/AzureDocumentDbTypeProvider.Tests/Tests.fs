@@ -23,4 +23,19 @@ let ``Can access .Name property of 'Test1' database``() =
     let name = dbs.test1.Name
     Assert.Equal<string>("test1",name)
 
-    
+[<Fact>]
+let ``Can access .Containers property of test1 database``() = 
+    let test1 = Tp.Databases.test1
+    let containers = test1.Containers
+    () //compilation alone indicates success
+
+[<Fact>]
+let ``.Containers property of test1 database contains a container for ``() = 
+    let test1 = Tp.Databases.test1
+    let containers = test1.Containers
+    () //compilation alone indicates success
+
+
+//TODO:
+//can create and delete databases
+//can create, read and delete containers
