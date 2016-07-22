@@ -4,21 +4,36 @@ open Microsoft.Azure.Documents.Client
 open System
 open Microsoft.Azure.Documents
 open ProviderImplementation.ProvidedTypes
+open Container
 
 type DbType 
     internal(name:string, uri:string,key:string) = 
+    let client = new DocumentClient(Uri(uri),key)
+    let dbUri = UriFactory.CreateDatabaseUri(name)
+    
     ///Database Name
     member __.Name with get () = name 
+
+    member __.ReadDatabase = 
+        client.ReadDatabaseAsync(dbUri)
+        |> Async.AwaitTask
+        |> Async.RunSynchronously
+    
+    member __.ReadDatabaseAsync ()= async {
+            return! 
+                client.ReadDatabaseAsync(dbUri)
+                |> Async.AwaitTask
+        }
 
 module DbBuilder = 
     let createDb dbName acEndpoint acKey = 
         DbType(dbName,acEndpoint,acKey)
 
 module DbMemberFactory = 
-    let buildDbMembers (dbType:ProvidedTypeDefinition) (domainType:ProvidedTypeDefinition) (uri:string) (pwd:string) (dbName:string) = 
+    let buildDbMembers (dbType:ProvidedTypeDefinition) (domainType:ProvidedTypeDefinition) (uri:string) (key:string) (dbName:string) = 
        dbType.AddMembersDelayed( fun () ->
-            let getName = makeProvidedProperty<string> (fun args -> <@@ dbName @@>) "Name" false
-            [getName]
+            let containerListing = buildContainerTypes uri key domainType dbName
+            [containerListing]
        )
 
 
@@ -27,8 +42,8 @@ let buildDbListing acEndpoint (acKey:string) (domainType:ProvidedTypeDefinition)
         let dbType = ProvidedTypeDefinition(dbName + "Db", Some typeof<DbType>, HideObjectMethods = true)
         domainType.AddMember dbType
         DbMemberFactory.buildDbMembers dbType domainType acEndpoint acKey dbName
-        let dbProp = ProvidedProperty(dbName, dbType, GetterCode = (fun _ -> <@@ DbBuilder.createDb dbName acEndpoint acKey @@>))
-        dbProp
+        ProvidedProperty(dbName, dbType, GetterCode = (fun args -> <@@ DbBuilder.createDb dbName acEndpoint acKey @@>), IsStatic = false)
+        
     
     let dbListingType = ProvidedTypeDefinition("DatabaseListing", Some typeof<obj>, HideObjectMethods = true)
     dbListingType.AddXmlDoc("Lists all databases in the DocumentDb account")
