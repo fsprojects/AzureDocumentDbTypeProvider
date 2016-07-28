@@ -32,7 +32,7 @@ module DbBuilder =
 module DbMemberFactory = 
     let buildDbMembers (dbType:ProvidedTypeDefinition) (domainType:ProvidedTypeDefinition) (uri:string) (key:string) (dbName:string) = 
        dbType.AddMembersDelayed( fun () ->
-            let containerListing = buildCollectionTypes uri key domainType dbName
+            let containerListing = buildCollectionListing uri key domainType dbName
             [containerListing]
        )
 

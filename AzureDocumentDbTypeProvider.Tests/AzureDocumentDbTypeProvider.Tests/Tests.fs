@@ -26,16 +26,16 @@ let ``Can access .Name property of 'Test1' database``() =
 [<Fact>]
 let ``Can access .Collections property of test1 database``() = 
     let test1 = Tp.Databases.test1
-    let containers = test1.Collections
+    let collections = test1.Collections
     () //compilation alone indicates success
 
-// [<Fact>]
-// let ``.Containers property of test1 database contains a container for ``() = 
-//     let test1 = Tp.Databases.test1
-//     let containers = test1.Collections
-//     () //compilation alone indicates success
+[<Fact>]
+let ``.Containers property of test1 database contains a container for ``() = 
+    let coll = Tp.Databases.test1.Collections.TestCollection
+    
+    () //compilation alone indicates success
 
 
 //TODO:
 //can create and delete databases
-//can create, read and delete containers
+//can create, read and delete collections
