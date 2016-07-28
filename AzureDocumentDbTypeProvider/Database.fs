@@ -4,7 +4,11 @@ open Microsoft.Azure.Documents.Client
 open System
 open Microsoft.Azure.Documents
 open ProviderImplementation.ProvidedTypes
+<<<<<<< HEAD
 open Container
+=======
+open Collection
+>>>>>>> dev
 
 type DbType 
     internal(name:string, uri:string,key:string) = 
@@ -32,7 +36,11 @@ module DbBuilder =
 module DbMemberFactory = 
     let buildDbMembers (dbType:ProvidedTypeDefinition) (domainType:ProvidedTypeDefinition) (uri:string) (key:string) (dbName:string) = 
        dbType.AddMembersDelayed( fun () ->
+<<<<<<< HEAD
             let containerListing = buildContainerTypes uri key domainType dbName
+=======
+            let containerListing = buildCollectionListing uri key domainType dbName
+>>>>>>> dev
             [containerListing]
        )
 
