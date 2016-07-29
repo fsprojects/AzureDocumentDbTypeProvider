@@ -40,14 +40,32 @@ Target "Test" (fun _ ->
     testDlls |> xUnit id
 )
 
-// Dependencies
+Target "BuildRelease" (fun _ ->
+    trace "-----Build using RELEASE configuration-----"
+    !!("AzureDocumentDbTypeProvider.sln")
+    |> MSBuildRelease "" "Build"
+    |> Log "AppBuild-Output: " )
+
+Target "CreatePackage"(fun _ -> 
+    trace "----Create NuGet Package ----"
+    //TODO
+)
+
 "Clean"
   ==> "BuildDebug"
+
+"Clean"
+  ==> "BuildRelease"
+
 
 "BuildDebug"
     ==> "BuildTestProj"
     ==> "Test"
     ==> "Default"
 
-// start build
+"BuildRelease"
+    ==> "BuildTestProj"
+    ==> "Test"
+    ==> "CreatePackage"
+
 RunTargetOrDefault "Default"
