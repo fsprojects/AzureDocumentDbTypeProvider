@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">    
+  <id></id>
+  <version>0.1.0.0</version>
+  <authors>Stewart Robertson</authors>
+  <owners>Stewart Robertson</owners>
+  <summary></summary>
+  <licenseUrl>https://github.com/stewart-r/AzureDocumentDbTypeProvider/blob/master/LICENSE.md</licenseUrl>
+  <projectUrl>https://github.com/stewart-r/AzureDocumentDbTypeProvider/</projectUrl>
+  <requireLicenseAcceptance>false</requireLicenseAcceptance>
+  <description></description>
+  <releaseNotes></releaseNotes>    
+  <tags>FSharp DocumentDb Azure TypeProvider</tags>
+  <dependencies></dependencies>
+  <references></references>
+  </metadata>
+  <files><file src="./.package/*.*" target="lib/Net40" /></files>
+</package>
