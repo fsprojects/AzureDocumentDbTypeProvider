@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">    
+  <id>FSharp.Azure.DocumentDbTypeProvider</id>
+  <version>0.1.0-alpha1</version>
+  <authors>Stewart Robertson</authors>
+  <owners>Stewart Robertson</owners>
+  <summary>A prototypical type provider for the Azure DocumentDb storage platform</summary>
+  <licenseUrl>https://github.com/stewart-r/AzureDocumentDbTypeProvider/blob/master/LICENSE.md</licenseUrl>
+  <projectUrl>https://github.com/stewart-r/AzureDocumentDbTypeProvider/</projectUrl>
+  <requireLicenseAcceptance>false</requireLicenseAcceptance>
+  <description>The DocumentDb Type Provider provides easy access to databases, collections and documents within an Azure DocumentDb account</description>
+  <releaseNotes>This package is still in development</releaseNotes>    
+  <tags>FSharp DocumentDb Azure TypeProvider</tags>
+  <dependencies></dependencies>
+  <references></references>
+  </metadata>
+  <files><file src="C:\Users\stewa_000\Source\Repos\AzureDocumentDbTypeProvider\.package\AzureDocumentDbTypeProvider.dll" target="/lib/Net45" />
+<file src="C:\Users\stewa_000\Source\Repos\AzureDocumentDbTypeProvider\.package\AzureDocumentDbTypeProvider.xml" target="/lib/Net45" />
+<file src="C:\Users\stewa_000\Source\Repos\AzureDocumentDbTypeProvider\.package\Microsoft.Azure.Documents.Client.dll" target="/lib/Net45" />
+<file src="C:\Users\stewa_000\Source\Repos\AzureDocumentDbTypeProvider\.package\Microsoft.Azure.Documents.Client.xml" target="/lib/Net45" />
+<file src="C:\Users\stewa_000\Source\Repos\AzureDocumentDbTypeProvider\.package\Newtonsoft.Json.dll" target="/lib/Net45" />
+<file src="C:\Users\stewa_000\Source\Repos\AzureDocumentDbTypeProvider\.package\Newtonsoft.Json.xml" target="/lib/Net45" /></files>
+</package>
