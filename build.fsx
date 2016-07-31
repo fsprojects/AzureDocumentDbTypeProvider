@@ -5,12 +5,16 @@ open Fake.Testing
 
 let authors = ["Stewart Robertson"]
 let projId = "FSharp.Azure.DocumentDbTypeProvider"
-let version = "0.1.0-alpha1"
+let version = "0.1.0-alpha2"
 let summary = "A prototypical type provider for the Azure DocumentDb storage platform"
 let description = "The DocumentDb Type Provider provides easy access to databases, collections and documents within an Azure DocumentDb account"
 let releaseNotes = "This package is still in development"
 let deploymentsDir = "./.deploy/"
 let buildDir = "./.build/"
+
+let testAcUri = environVar "test_acc_uri"
+let testAcKey = environVar "test_acc_key"
+let nugetApiKey = environVar "nuget_key"  
 
 let packageFiles = [
     buildDir + "AzureDocumentDbTypeProvider.dll"
@@ -69,6 +73,17 @@ Target "BuildRelease" (fun _ ->
     |> MSBuildRelease buildDir "Build"
     |> Log "AppBuild-Output: " )
 
+Target "SetTestAccount"(fun _ ->
+    let replaceFn (inputStr:string) = 
+        inputStr
+            .Replace("let AccountEndpointUri = \"\"\"{Insert your test account endpoint uri here}\"\"\"", 
+                "let AccountEndpointUri = \"\"\"" + testAcUri + "\"\"\"" )
+            .Replace("let AccountKey = \"\"\"{Insert your test account key here}\"\"\"",
+                "let AccountKey = \"\"\""+ testAcKey + "\"\"\"")
+    ReplaceInFile replaceFn "AzureDocumenttDbTypeProvider.Tests\AzureDocumenttDbTypeProvider.Tests\TestAccountConfig.ts"
+
+)
+
 Target "CreatePackage"(fun _ -> 
     trace "----Create NuGet Package ----"
     CopyFiles packageDir packageFiles
@@ -91,6 +106,29 @@ Target "CreatePackage"(fun _ ->
 
 )
 
+Target "DeployPackage"(fun _ -> 
+    trace "----Create NuGet Package ----"
+    CopyFiles packageDir packageFiles
+    
+    NuGet (fun p ->
+        {p with 
+            Project = projId
+            Description = description
+            Files = 
+                packageFiles 
+                |> List.map(fun f -> 
+                    (f.Replace(buildDir,"") ,Some "lib/Net45",None))
+            Version = version
+            Summary = summary
+            ReleaseNotes = releaseNotes
+            OutputPath = deploymentsDir
+            WorkingDir = packageDir
+            AccessKey = nugetApiKey
+            Publish = true
+            Authors = authors }) "Nuget/AzureDocumentDbTypeProvider.nuspec"
+
+)
+
 "Clean"
   ==> "BuildDebug"
 
@@ -108,5 +146,10 @@ Target "CreatePackage"(fun _ ->
     ==> "BuildTestProj"
     ==> "Test"
     ==> "CreatePackage"
+
+"BuildRelease"
+    ==> "BuildTestProj"
+    ==> "Test"
+    ==> "DeployPackage"
 
 RunTargetOrDefault "Default"
