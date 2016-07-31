@@ -73,7 +73,7 @@ Target "BuildRelease" (fun _ ->
     |> MSBuildRelease buildDir "Build"
     |> Log "AppBuild-Output: " )
 
-Target "SetTestAccount"(fun _ ->
+Target "SetUpTestAccountConfig"(fun _ ->
     let replaceFn (inputStr:string) = 
         inputStr
             .Replace("let AccountEndpointUri = \"\"\"{Insert your test account endpoint uri here}\"\"\"", 
@@ -147,7 +147,8 @@ Target "DeployPackage"(fun _ ->
     ==> "Test"
     ==> "CreatePackage"
 
-"BuildRelease"
+"SetUpTestAccountConfig"
+    ==> "BuildRelease"
     ==> "BuildTestProj"
     ==> "Test"
     ==> "DeployPackage"
