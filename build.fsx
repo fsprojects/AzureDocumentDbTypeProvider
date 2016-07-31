@@ -80,7 +80,7 @@ Target "SetUpTestAccountConfig"(fun _ ->
                 "let AccountEndpointUri = \"\"\"" + testAcUri + "\"\"\"" )
             .Replace("let AccountKey = \"\"\"{Insert your test account key here}\"\"\"",
                 "let AccountKey = \"\"\""+ testAcKey + "\"\"\"")
-    ReplaceInFile replaceFn "AzureDocumenttDbTypeProvider.Tests\AzureDocumentDbTypeProvider.Tests\TestAccountConfig.ts"
+    ReplaceInFile replaceFn "AzureDocumentDbTypeProvider.Tests\AzureDocumentDbTypeProvider.Tests\TestAccountConfig.ts"
 
 )
 
