@@ -152,4 +152,4 @@ Target "DeployPackage"(fun _ ->
     ==> "Test"
     ==> "DeployPackage"
 
-RunTargetOrDefault "Default"
+RunTargetOrDefault "DeployPackage"
