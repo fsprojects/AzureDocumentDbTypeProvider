@@ -76,7 +76,8 @@ Target "SetUpTestAccountConfig" (fun _ ->
     trace "---- Set Up Test Account -----"
     let testAcUri = environVar "testaccuri"
     let testAcKey = environVar "testacckey"
-    trace ("test acc uri: " + testAcUri)
+    let tmpTest = environVar "variable1"
+    trace ("test acc uri: " + tmpTest)
     let replaceFn (inputStr:string) = 
         inputStr
             .Replace("let AccountEndpointUri = \"\"\"{Insert your test account endpoint uri here}\"\"\"", 

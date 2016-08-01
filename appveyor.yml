@@ -4,6 +4,7 @@ branches:
     - nuget
 
 environment:
+  variable1: "var1"
   testaccuri:
     secure: hc4mzI6fMrtX6vJgdjjphqVQfmCJOq5HFVglyWqAky4+o0UuKRpjuu4ftwyPx7UY
   testacckey:
