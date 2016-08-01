@@ -1,6 +1,7 @@
 branches:
   only:
     - master
+    - nuget
 
 environment:
   variable1:
