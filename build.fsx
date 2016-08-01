@@ -138,6 +138,8 @@ Target "DeployPackage"(fun _ ->
 "Clean"
   ==> "BuildRelease"
 
+"SetUpTestAccountConfig" 
+    ==> "BuildTestProj"
 
 "BuildDebug"
     ==> "SetUp"
@@ -149,9 +151,8 @@ Target "DeployPackage"(fun _ ->
     ==> "BuildTestProj"
     ==> "Test"
     ==> "CreatePackage"
-
-"SetUpTestAccountConfig"
-    ==> "BuildRelease"
+    
+"BuildRelease"
     ==> "BuildTestProj"
     ==> "Test"
     ==> "DeployPackage"
