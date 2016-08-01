@@ -12,9 +12,6 @@ let releaseNotes = "This package is still in development"
 let deploymentsDir = "./.deploy/"
 let buildDir = "./.build/"
 
-
-let nugetApiKey = environVar "nugetkey"  
-
 let packageFiles = [
     buildDir + "AzureDocumentDbTypeProvider.dll"
     buildDir + "AzureDocumentDbTypeProvider.xml"
@@ -76,8 +73,7 @@ Target "SetUpTestAccountConfig" (fun _ ->
     trace "---- Set Up Test Account -----"
     let testAcUri = environVar "testaccuri"
     let testAcKey = environVar "testacckey"
-    let tmpTest = environVar "variable1"
-    trace ("test acc uri: " + tmpTest)
+    trace ("test acc uri: " + testAcUri)
     let replaceFn (inputStr:string) = 
         inputStr
             .Replace("let AccountEndpointUri = \"\"\"{Insert your test account endpoint uri here}\"\"\"", 
@@ -113,6 +109,7 @@ Target "CreatePackage"(fun _ ->
 Target "DeployPackage"(fun _ -> 
     trace "----Create NuGet Package ----"
     CopyFiles packageDir packageFiles
+    let nugetApiKey = environVar "nugetkey"
     
     NuGet (fun p ->
         {p with 
