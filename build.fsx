@@ -13,7 +13,7 @@ let deploymentsDir = "./.deploy/"
 let buildDir = "./.build/"
 
 
-let nugetApiKey = environVar "nuget_key"  
+let nugetApiKey = environVar "nugetkey"  
 
 let packageFiles = [
     buildDir + "AzureDocumentDbTypeProvider.dll"
@@ -74,9 +74,9 @@ Target "BuildRelease" (fun _ ->
 
 Target "SetUpTestAccountConfig" (fun _ ->
     trace "---- Set Up Test Account -----"
-    let testAcUri = environVar "test_acc_uri"
-    let testAcKey = environVar "test_acc_key"
-    trace testAcUri
+    let testAcUri = environVar "testaccuri"
+    let testAcKey = environVar "testacckey"
+    trace ("test acc uri: " + testAcUri)
     let replaceFn (inputStr:string) = 
         inputStr
             .Replace("let AccountEndpointUri = \"\"\"{Insert your test account endpoint uri here}\"\"\"", 
@@ -151,7 +151,7 @@ Target "DeployPackage"(fun _ ->
     ==> "BuildTestProj"
     ==> "Test"
     ==> "CreatePackage"
-    
+
 "BuildRelease"
     ==> "BuildTestProj"
     ==> "Test"
