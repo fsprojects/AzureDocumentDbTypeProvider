@@ -5,7 +5,7 @@ branches:
 
 environment:
   variable1:
-    secure: Ja0uNa7EuU9tzLawbkS8gg==
+    secure: hc4mzI6fMrtX6vJgdjjphqVQfmCJOq5HFVglyWqAky4+o0UuKRpjuu4ftwyPx7UY
   testaccuri:
     secure: hc4mzI6fMrtX6vJgdjjphqVQfmCJOq5HFVglyWqAky4+o0UuKRpjuu4ftwyPx7UY
   testacckey:
