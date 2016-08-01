@@ -12,8 +12,7 @@ let releaseNotes = "This package is still in development"
 let deploymentsDir = "./.deploy/"
 let buildDir = "./.build/"
 
-let testAcUri = environVar "test_acc_uri"
-let testAcKey = environVar "test_acc_key"
+
 let nugetApiKey = environVar "nuget_key"  
 
 let packageFiles = [
@@ -75,6 +74,8 @@ Target "BuildRelease" (fun _ ->
 
 Target "SetUpTestAccountConfig" (fun _ ->
     trace "---- Set Up Test Account -----"
+    let testAcUri = environVar "test_acc_uri"
+    let testAcKey = environVar "test_acc_key"
     trace testAcUri
     let replaceFn (inputStr:string) = 
         inputStr
