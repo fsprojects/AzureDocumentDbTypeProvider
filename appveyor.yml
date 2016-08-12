@@ -16,4 +16,4 @@ artifacts:
     name: NugetPackage
 
 build_script:
-  - cmd: build.bat "DeployPackage"
+  - cmd: build.bat "BuildPackage"
