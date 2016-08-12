@@ -11,5 +11,9 @@ environment:
   nuget_key:
     secure: r0JyLN61Eww9DVxuDfc9y+vy3GLfeJ1A69VkHek9II/gFaqR/DJpwMInutX6XW21
 
+artifacts:
+  - path: ./deploy
+    name: NugetPackage
+
 build_script:
-  - cmd: build.bat 
+  - cmd: build.bat "DeployPackage"
