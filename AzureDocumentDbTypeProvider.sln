@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{52BC3CF7-CD21-4F49-BFB1-5621350F7DAB}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		AzureDocumentDbTypeProvider.nuspec = AzureDocumentDbTypeProvider.nuspec
 		build.fsx = build.fsx
 		paket.dependencies = paket.dependencies
 	EndProjectSection

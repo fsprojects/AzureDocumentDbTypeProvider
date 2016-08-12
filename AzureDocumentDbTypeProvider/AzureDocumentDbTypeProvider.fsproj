@@ -27,6 +27,7 @@
     <PlatformTarget />
     <Prefer32Bit />
     <OtherFlags />
+    <DocumentationFile>bin\Debug\AzureDocumentDbTypeProvider.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols />
@@ -39,6 +40,7 @@
     <PlatformTarget />
     <Prefer32Bit />
     <OtherFlags />
+    <DocumentationFile>bin\Release\AzureDocumentDbTypeProvider.xml</DocumentationFile>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Choose>
