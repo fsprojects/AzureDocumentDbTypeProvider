@@ -8,12 +8,17 @@ environment:
     secure: hc4mzI6fMrtX6vJgdjjphqVQfmCJOq5HFVglyWqAky4+o0UuKRpjuu4ftwyPx7UY
   test_acc_key:
     secure: r584cm1R2bMHBEbCUNtqNX8CFkmDqHj0PaYV19WuKvGh61AKbqgc9MnM1IZhglL1m/8MRVHQu2pfVp+bIclkdI9TvijgauqVBv6XwT09GZ5zyWKgFxA+IwvjFU5G/vT9
-  nuget_key:
-    secure: r0JyLN61Eww9DVxuDfc9y+vy3GLfeJ1A69VkHek9II/gFaqR/DJpwMInutX6XW21
 
 artifacts:
   - path: \.deploy\*.nupkg
     name: NugetPackage
+
+deploy:
+  provider: NuGet
+  api_key:
+    secure: r0JyLN61Eww9DVxuDfc9y+vy3GLfeJ1A69VkHek9II/gFaqR/DJpwMInutX6XW21
+  skip_symbols: false
+  artifact: /.*\.nupkg/
 
 build_script:
   - cmd: build.bat "BuildPackage"
