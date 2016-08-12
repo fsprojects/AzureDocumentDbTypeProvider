@@ -12,7 +12,7 @@ environment:
     secure: r0JyLN61Eww9DVxuDfc9y+vy3GLfeJ1A69VkHek9II/gFaqR/DJpwMInutX6XW21
 
 artifacts:
-  - path: ./deploy
+  - path: ./deploy/*.nupkg
     name: NugetPackage
 
 build_script:
