@@ -10,4 +10,7 @@ packages
 paket-files/
 
 .fake
+.build
+.deploy
+.package
 
