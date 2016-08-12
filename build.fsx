@@ -5,16 +5,14 @@ open Fake.Testing
 
 let authors = ["Stewart Robertson"]
 let projId = "FSharp.Azure.DocumentDbTypeProvider"
-let version = "0.1.0-alpha2"
+let version = "0.1.0-alpha3"
 let summary = "A prototypical type provider for the Azure DocumentDb storage platform"
 let description = "The DocumentDb Type Provider provides easy access to databases, collections and documents within an Azure DocumentDb account"
 let releaseNotes = "This package is still in development"
 let deploymentsDir = "./.deploy/"
 let buildDir = "./.build/"
 
-let testAcUri = environVar "test_acc_uri"
-let testAcKey = environVar "test_acc_key"
-let nugetApiKey = environVar "nuget_key"  
+
 
 let packageFiles = [
     buildDir + "AzureDocumentDbTypeProvider.dll"
@@ -43,10 +41,6 @@ Target "Clean" (fun _ ->
     CleanDirs [testDir;packageDir]
 )
 
-Target "Default" (fun _ ->
-   trace "-----Building DEFAULT-----"
-)
-
 Target "BuildTestProj"(fun _ ->
     trace "-----Build Test Project-----"
     !!("AzureDocumentDbTypeProvider.Tests\AzureDocumentDbTypeProvider.Tests.sln")
@@ -73,15 +67,18 @@ Target "BuildRelease" (fun _ ->
     |> MSBuildRelease buildDir "Build"
     |> Log "AppBuild-Output: " )
 
-Target "SetTestAccount"(fun _ ->
+Target "SetTestAccountCreds"(fun _ ->
     let replaceFn (inputStr:string) = 
+        let testAcUri = environVar "test_acc_uri"
+        let testAcKey = environVar "test_acc_key"
+        let findStrKey ="let AccountKey = \"\"\"{Insert your test account key here}\"\"\"" 
+        let repStrKey ="let AccountKey = \"\"\"" + testAcKey + "\"\"\"" 
+        let findStrUri ="let AccountEndpointUri = \"\"\"{Insert your test account endpoint uri here}\"\"\"" 
+        let repStrUri ="let AccountEndpointUri = \"\"\"" + testAcUri + "\"\"\"" 
         inputStr
-            .Replace("let AccountEndpointUri = \"\"\"{Insert your test account endpoint uri here}\"\"\"", 
-                "let AccountEndpointUri = \"\"\"" + testAcUri + "\"\"\"" )
-            .Replace("let AccountKey = \"\"\"{Insert your test account key here}\"\"\"",
-                "let AccountKey = \"\"\""+ testAcKey + "\"\"\"")
-    ReplaceInFile replaceFn "AzureDocumenttDbTypeProvider.Tests\AzureDocumenttDbTypeProvider.Tests\TestAccountConfig.ts"
-
+            .Replace(findStrKey, repStrKey )
+            .Replace(findStrUri, repStrUri)
+    ReplaceInFile replaceFn "AzureDocumentDbTypeProvider.Tests\AzureDocumentDbTypeProvider.Tests\TestAccountConfig.fs"
 )
 
 Target "CreatePackage"(fun _ -> 
@@ -109,7 +106,7 @@ Target "CreatePackage"(fun _ ->
 Target "DeployPackage"(fun _ -> 
     trace "----Create NuGet Package ----"
     CopyFiles packageDir packageFiles
-    
+    //let nugetApiKey = environVar "nuget_key"
     NuGet (fun p ->
         {p with 
             Project = projId
@@ -123,8 +120,8 @@ Target "DeployPackage"(fun _ ->
             ReleaseNotes = releaseNotes
             OutputPath = deploymentsDir
             WorkingDir = packageDir
-            AccessKey = nugetApiKey
-            Publish = true
+            Publish = false
+            
             Authors = authors }) "Nuget/AzureDocumentDbTypeProvider.nuspec"
 
 )
@@ -135,21 +132,24 @@ Target "DeployPackage"(fun _ ->
 "Clean"
   ==> "BuildRelease"
 
+"SetUp"
+    ==> "BuildDebug"
+"SetUp"
+    ==> "BuildRelease"
+"SetUp"
+    ==> "BuildTestProj"
+
+"SetTestAccountCreds" 
+    ==> "BuildTestProj"
+
 
 "BuildDebug"
-    ==> "SetUp"
     ==> "BuildTestProj"
     ==> "Test"
-    ==> "Default"
 
-"BuildRelease"
-    ==> "BuildTestProj"
-    ==> "Test"
-    ==> "CreatePackage"
+"BuildDebug" ?=> "BuildTestProj"
+"BuildRelease" ?=> "BuildTestProj"
 
-"BuildRelease"
-    ==> "BuildTestProj"
-    ==> "Test"
-    ==> "DeployPackage"
+"BuildRelease" ==> "DeployPackage"
 
-RunTargetOrDefault "Default"
+RunTargetOrDefault "Test"
