@@ -103,10 +103,9 @@ Target "CreatePackage"(fun _ ->
 
 )
 
-Target "DeployPackage"(fun _ -> 
+Target "BuildPackage"(fun _ -> 
     trace "----Create NuGet Package ----"
     CopyFiles packageDir packageFiles
-    //let nugetApiKey = environVar "nuget_key"
     NuGet (fun p ->
         {p with 
             Project = projId
@@ -150,6 +149,6 @@ Target "DeployPackage"(fun _ ->
 "BuildDebug" ?=> "BuildTestProj"
 "BuildRelease" ?=> "BuildTestProj"
 
-"BuildRelease" ==> "DeployPackage"
+"BuildRelease" ==> "BuildPackage"
 
-RunTargetOrDefault "Test"
+RunTargetOrDefault "BuildPackage"
