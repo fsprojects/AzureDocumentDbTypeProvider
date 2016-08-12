@@ -1,7 +1,12 @@
 // include Fake lib
 #r "packages/FAKE/tools/FakeLib.dll"
+#r "packages/Microsoft.Azure.DocumentDB/lib/net45/Microsoft.Azure.Documents.Client.dll"
+
 open Fake
 open Fake.Testing
+open Microsoft.Azure.Documents.Client
+open Microsoft.Azure.Documents
+open System
 
 let authors = ["Stewart Robertson"]
 let projId = "FSharp.Azure.DocumentDbTypeProvider"
@@ -11,8 +16,8 @@ let description = "The DocumentDb Type Provider provides easy access to database
 let releaseNotes = "This package is still in development"
 let deploymentsDir = "./.deploy/"
 let buildDir = "./.build/"
-
-
+let testAcUri = environVar "test_acc_uri"
+let testAcKey = environVar "test_acc_key"
 
 let packageFiles = [
     buildDir + "AzureDocumentDbTypeProvider.dll"
@@ -69,8 +74,6 @@ Target "BuildRelease" (fun _ ->
 
 Target "SetTestAccountCreds"(fun _ ->
     let replaceFn (inputStr:string) = 
-        let testAcUri = environVar "test_acc_uri"
-        let testAcKey = environVar "test_acc_key"
         let findStrKey ="let AccountKey = \"\"\"{Insert your test account key here}\"\"\"" 
         let repStrKey ="let AccountKey = \"\"\"" + testAcKey + "\"\"\"" 
         let findStrUri ="let AccountEndpointUri = \"\"\"{Insert your test account endpoint uri here}\"\"\"" 
@@ -124,6 +127,63 @@ Target "BuildPackage"(fun _ ->
             Authors = authors }) "Nuget/AzureDocumentDbTypeProvider.nuspec"
 
 )
+
+
+let deleteDb name = 
+    let client = new DocumentClient(Uri(testAcUri), testAcKey)
+    let db = 
+        client.CreateDatabaseQuery()
+        |> Seq.tryFind(fun d -> d.Id = name)
+
+    match db with
+    | None -> ()
+    | Some _ -> 
+        client.DeleteDatabaseAsync( UriFactory.CreateDatabaseUri(name))
+        |> Async.AwaitTask
+        |> Async.RunSynchronously
+        |> ignore
+
+let createDb name =
+    let client = new DocumentClient(Uri(testAcUri), testAcKey)
+    client.CreateDatabaseAsync(Database(Id=name)) 
+    |> Async.AwaitTask 
+    |> Async.Ignore 
+    |> Async.RunSynchronously
+
+let createCollection dbId name = 
+    let client = new DocumentClient(Uri(testAcUri), testAcKey)
+    let collDef = new DocumentCollection(Id=name)
+    let reqOpts = new RequestOptions(OfferThroughput = Nullable(400))
+    client.CreateDocumentCollectionAsync(
+        UriFactory.CreateDatabaseUri(dbId),
+        collDef,
+        reqOpts)
+        |> Async.AwaitTask
+        |> Async.RunSynchronously
+        |> ignore
+
+let deleteCollection dbId name = 
+    let client = new DocumentClient(Uri(testAcUri), testAcKey)
+    client.DeleteDocumentCollectionAsync(UriFactory.CreateDocumentCollectionUri(dbId,name))
+    |> Async.AwaitTask
+    |> Async.RunSynchronously
+    |> ignore
+
+FinalTarget "CleanTestData" (fun _ ->
+    deleteDb "test1"
+    deleteDb "test2"
+)
+
+Target "InitTestData" (fun _ ->
+    ActivateFinalTarget "CleanTestData"
+    deleteDb "test1"
+    deleteDb "test2"
+    createDb "test1"
+    createDb "test2"
+    createCollection "test1" "TestCollection"
+    )
+
+"InitTestData" ==> "BuildTestProj"
 
 "Clean"
   ==> "BuildDebug"
