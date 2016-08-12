@@ -5,7 +5,7 @@ open Fake.Testing
 
 let authors = ["Stewart Robertson"]
 let projId = "FSharp.Azure.DocumentDbTypeProvider"
-let version = "0.1.0-alpha3"
+let version = environVarOrDefault  "APPVEYOR_BUILD_VERSION" "0.1-alpha1"
 let summary = "A prototypical type provider for the Azure DocumentDb storage platform"
 let description = "The DocumentDb Type Provider provides easy access to databases, collections and documents within an Azure DocumentDb account"
 let releaseNotes = "This package is still in development"
@@ -145,6 +145,8 @@ Target "BuildPackage"(fun _ ->
 "BuildDebug"
     ==> "BuildTestProj"
     ==> "Test"
+
+"Test" ==> "BuildPackage"
 
 "BuildDebug" ?=> "BuildTestProj"
 "BuildRelease" ?=> "BuildTestProj"
