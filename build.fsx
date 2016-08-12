@@ -71,6 +71,7 @@ Target "SetTestAccountCreds"(fun _ ->
     let replaceFn (inputStr:string) = 
         let testAcUri = environVar "test_acc_uri"
         let testAcKey = environVar "test_acc_key"
+        trace ("uri: " +  testAcUri)
         let findStrKey ="let AccountKey = \"\"\"{Insert your test account key here}\"\"\"" 
         let repStrKey ="let AccountKey = \"\"\"" + testAcKey + "\"\"\"" 
         let findStrUri ="let AccountEndpointUri = \"\"\"{Insert your test account endpoint uri here}\"\"\"" 
