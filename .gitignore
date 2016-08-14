@@ -1,8 +1,8 @@
 [Bb]in/
 [Oo]bj/
-.test
-packages
-
+.test/
+packages/
+temp/
 *.suo
 */.vs
 
@@ -13,4 +13,3 @@ paket-files/
 .build
 .deploy
 .package
-
