@@ -4,7 +4,7 @@
 #I "../../bin"
 
 (**
-AzureDocumentDbTypeprovider
+AzureDocumentDbTypeProvider
 ======================
 
 Documentation
@@ -13,7 +13,7 @@ Documentation
   <div class="span1"></div>
   <div class="span6">
     <div class="well well-small" id="nuget">
-      The AzureDocumentDbTypeprovider library can be <a href="https://nuget.org/packages/AzureDocumentDbTypeProvider">installed from NuGet</a>:
+      The AzureDocumentDbTypeProvider library can be <a href="https://nuget.org/packages/AzureDocumentDbTypeProvider">installed from NuGet</a>:
       <pre>PM> Install-Package AzureDocumentDbTypeprovider</pre>
     </div>
   </div>
@@ -23,16 +23,22 @@ Documentation
 Example
 -------
 
-This example demonstrates using a function defined in this sample library.
+We initialise the type provider using the account Uri and account key for an Azure DocumentDb account as follows:
 
 *)
 #r "AzureDocumentDbTypeProvider.dll"
 open AzureDocumentDbTypeProvider
 
-type Tp = DocumentDbTypeProvider<"{yourAccountUri}","{yourAccountKey}">
+type Tp = DocumentDbTypeProvider<"https://mydbaccount.documents.azure.com:443/","abC34XmxERSHbwXrdxXjXdZzOtybBqrhRhpYk9j8LqerPWIuMKAdX8n2OHL0jRZNSuq8dQjHVIZMmAHcntfICg==">
 
 (**
-Some more info
+we can then access any databases in our account:
+
+*)
+
+let myDb = Tp.
+
+(**
 
 Samples & documentation
 -----------------------
