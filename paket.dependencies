@@ -3,6 +3,7 @@ source https://www.nuget.org/api/v2/
 
 nuget FAKE
 nuget FSharp.Core
+nuget FSharp.Formatting
 nuget FsUnit.xUnit
 nuget Microsoft.Azure.DocumentDB
 nuget Newtonsoft.Json 6.0.8

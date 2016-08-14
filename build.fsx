@@ -16,6 +16,7 @@ let description = "The DocumentDb Type Provider provides easy access to database
 let releaseNotes = "This package is still in development"
 let deploymentsDir = "./.deploy/"
 let buildDir = "./.build/"
+let binDir = "./bin/"
 let testAcUri = environVar "test_acc_uri"
 let testAcKey = environVar "test_acc_key"
 
@@ -36,14 +37,14 @@ let testDir = "./.test/"
 
 //Sets up directories used in build process
 Target "SetUp" (fun _ -> 
-        [buildDir;packageDir;testDir;deploymentsDir] |> Seq.iter(fun d -> ensureDirectory d)
+        [buildDir;packageDir;testDir;deploymentsDir;binDir] |> Seq.iter(fun d -> ensureDirectory d)
     )   
 
 // Targets
 Target "Clean" (fun _ ->
     trace "-----Clean previous build-----"
     CleanDirs buildDirs
-    CleanDirs [testDir;packageDir]
+    CleanDirs [testDir;packageDir;binDir]
 )
 
 Target "BuildTestProj"(fun _ ->
@@ -169,6 +170,95 @@ let deleteCollection dbId name =
     |> Async.RunSynchronously
     |> ignore
 
+let fakePath = "packages" </> "FAKE" </> "tools" </> "FAKE.exe"
+let fakeStartInfo script workingDirectory args fsiargs environmentVars =
+    (fun (info: System.Diagnostics.ProcessStartInfo) ->
+        info.FileName <- System.IO.Path.GetFullPath fakePath
+        info.Arguments <- sprintf "%s --fsiargs -d:FAKE %s \"%s\"" args fsiargs script
+        info.WorkingDirectory <- workingDirectory
+        let setVar k v =
+            info.EnvironmentVariables.[k] <- v
+        for (k, v) in environmentVars do
+            setVar k v
+        setVar "MSBuild" msBuildExe
+        setVar "GIT" Git.CommandHelper.gitPath
+        setVar "FSI" fsiPath)
+
+/// Run the given buildscript with FAKE.exe
+let executeFAKEWithOutput workingDirectory script fsiargs envArgs =
+    let exitCode =
+        ExecProcessWithLambdas
+            (fakeStartInfo script workingDirectory "" fsiargs envArgs)
+            TimeSpan.MaxValue false ignore ignore
+    System.Threading.Thread.Sleep 1000
+    exitCode
+
+// Documentation
+let buildDocumentationTarget fsiargs target =
+    trace (sprintf "Building documentation (%s), this could take some time, please wait..." target)
+    let exit = executeFAKEWithOutput "docs/tools" "generate.fsx" fsiargs ["target", target]
+    if exit <> 0 then
+        failwith "generating reference documentation failed"
+    ()
+
+Target "GenerateReferenceDocs" (fun _ ->
+    buildDocumentationTarget "-d:RELEASE -d:REFERENCE" "Default"
+)
+
+let generateHelp' fail debug =
+    let args =
+        if debug then "--define:HELP"
+        else "--define:RELEASE --define:HELP"
+    try
+        buildDocumentationTarget args "Default"
+        traceImportant "Help generated"
+    with
+    | e when not fail ->
+        traceImportant "generating help documentation failed"
+
+let generateHelp fail =
+    generateHelp' fail false
+
+Target "GenerateHelp" (fun _ ->
+    DeleteFile "docs/content/release-notes.md"
+    CopyFile "docs/content/" "RELEASE_NOTES.md"
+    Rename "docs/content/release-notes.md" "docs/content/RELEASE_NOTES.md"
+
+    DeleteFile "docs/content/license.md"
+    CopyFile "docs/content/" "LICENSE.txt"
+    Rename "docs/content/license.md" "docs/content/LICENSE.txt"
+
+    generateHelp true
+)
+
+Target "GenerateHelpDebug" (fun _ ->
+    DeleteFile "docs/content/release-notes.md"
+    CopyFile "docs/content/" "RELEASE_NOTES.md"
+    Rename "docs/content/release-notes.md" "docs/content/RELEASE_NOTES.md"
+
+    DeleteFile "docs/content/license.md"
+    CopyFile "docs/content/" "LICENSE.txt"
+    Rename "docs/content/license.md" "docs/content/LICENSE.txt"
+
+    generateHelp' true true
+)
+
+Target "KeepRunning" (fun _ ->
+    use watcher = !! "docs/content/**/*.*" |> WatchChanges (fun changes ->
+         generateHelp' true true
+    )
+
+    traceImportant "Waiting for help edits. Press any key to stop."
+
+    System.Console.ReadKey() |> ignore
+
+    watcher.Dispose()
+)
+
+Target "CopyBin" (fun _ -> 
+    Copy binDir (!!(packageDir + "**"))
+)
+
 FinalTarget "CleanTestData" (fun _ ->
     deleteDb "test1"
     deleteDb "test2"
@@ -183,7 +273,35 @@ Target "InitTestData" (fun _ ->
     createCollection "test1" "TestCollection"
     )
 
+Target "CleanDocs" (fun _ ->
+    CleanDirs ["docs/output"]
+)
+
+Target "GenerateDocs" DoNothing
+
 "InitTestData" ==> "BuildTestProj"
+
+"CopyBin"
+  ==> "GenerateHelp"
+  ==> "GenerateReferenceDocs"
+  ==> "GenerateDocs"
+
+"CopyBin"
+  ==> "GenerateHelpDebug"
+
+"CleanDocs"
+  ==> "GenerateHelp"
+  ==> "GenerateReferenceDocs"
+  ==> "GenerateDocs"
+
+"CleanDocs"
+  ==> "GenerateHelpDebug"
+
+"BuildPackage"
+  ==> "CopyBin"
+
+"GenerateHelpDebug"
+  ==> "KeepRunning"
 
 "Clean"
   ==> "BuildDebug"
@@ -191,12 +309,10 @@ Target "InitTestData" (fun _ ->
 "Clean"
   ==> "BuildRelease"
 
-"SetUp"
-    ==> "BuildDebug"
-"SetUp"
-    ==> "BuildRelease"
-"SetUp"
-    ==> "BuildTestProj"
+"SetUp" ==> "BuildRelease"
+"SetUp" ==> "BuildDebug"
+"SetUp" ==> "BuildTestProj"
+"SetUp" ==> "CopyBin"
 
 "SetTestAccountCreds" 
     ==> "BuildTestProj"
