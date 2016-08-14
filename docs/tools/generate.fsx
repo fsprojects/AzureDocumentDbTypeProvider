@@ -14,6 +14,8 @@ let referenceBinaries = []
 
 let githubLink = "https://github.com/stewart-r/AzureDocumentDbTypeProvider"
 
+let website = "https://stewart-r.github.io/AzureDocumentDbTypeProvider"
+
 // Specify more information about your project
 let info =
   [ "project-name", "AzureDocumentDbTypeProvider"
@@ -38,8 +40,11 @@ open FSharp.MetadataFormat
 
 // When called from 'build.fsx', use the public project URL as <root>
 // otherwise, use the current 'output' directory.
-
-let root = "file://" + (__SOURCE_DIRECTORY__ @@ "../output")
+//#if RELEASE
+let root = website
+//#else
+//let root = "file://" + (__SOURCE_DIRECTORY__ @@ "../output")
+//#endif
 
 
 // Paths with template/source/output locations

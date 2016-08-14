@@ -4,6 +4,7 @@
 
 open Fake
 open Fake.Testing
+open Fake.Git
 open Microsoft.Azure.Documents.Client
 open Microsoft.Azure.Documents
 open System
@@ -33,6 +34,17 @@ let packageDir = "./.package/"
 
 let buildDirs = [ "AzureDocumentDbTypeProvider/bin"; "AzureDocumentDbTypeProvider.Tests/bin"; buildDir ]
 let testDir = "./.test/"
+
+// Git configuration (used for publishing documentation in gh-pages branch)
+// The profile where the project is posted
+let gitOwner = "stewart-r"
+let gitHome = "https://github.com/" + gitOwner
+
+// The name of the project on GitHub
+let gitName = "AzureDocumentDbTypeProvider"
+
+// The url for the raw files hosted
+let gitRaw = environVarOrDefault "gitRaw" "https://raw.github.com/stewart-r"
 
 
 //Sets up directories used in build process
@@ -279,7 +291,22 @@ Target "CleanDocs" (fun _ ->
 
 Target "GenerateDocs" DoNothing
 
+Target "ReleaseDocs" (fun _ ->
+    let tempDocsDir = "temp" </> "gh-pages"
+    ensureDirectory tempDocsDir
+    CleanDir tempDocsDir
+    Repository.cloneSingleBranch "" (gitHome + "/" + gitName + ".git") "gh-pages" tempDocsDir
+
+    Git.CommandHelper.runSimpleGitCommand tempDocsDir "rm . -f -r" |> ignore
+    CopyRecursive "docs/output" tempDocsDir true |> tracefn "%A"
+    
+    StageAll tempDocsDir
+    Git.Commit.Commit tempDocsDir "Update generated documentation"
+    Branches.push tempDocsDir)
+
 "InitTestData" ==> "BuildTestProj"
+
+"GenerateDocs" ==> "ReleaseDocs"
 
 "CopyBin"
   ==> "GenerateHelp"
