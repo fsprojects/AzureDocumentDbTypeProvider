@@ -27,16 +27,19 @@ We initialise the type provider using the account Uri and account key for an Azu
 
 *)
 #r "AzureDocumentDbTypeProvider.dll"
-open AzureDocumentDbTypeProvider
+open FSharp.Azure.DocumentDbTypeProvider
 
-type Tp = DocumentDbTypeProvider<"https://mydbaccount.documents.azure.com:443/","abC34XmxERSHbwXrdxXjXdZzOtybBqrhRhpYk9j8LqerPWIuMKAdX8n2OHL0jRZNSuq8dQjHVIZMmAHcntfICg==">
+type Tp = DocumentDbTypeProvider<"https://mydbaccount.documents.azure.com:443/","TheAccountKeyFromTheAzurePortal==">
 
 (**
-we can then access any databases in our account:
+we can then get intellisense for the databases in our account like so:
+![alt text](img/DbCapture.PNG "DocumentDb intellisense list")
 
+We can get a handle on the SDK db object with:
 *)
 
-let myDb = Tp.
+let catDbObj = Tp.Databases.Catalogue.ReadDatabase
+
 
 (**
 
