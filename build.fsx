@@ -8,6 +8,7 @@ open Fake.Git
 open Microsoft.Azure.Documents.Client
 open Microsoft.Azure.Documents
 open System
+open System.IO
 
 let authors = ["Stewart Robertson"]
 let projId = "FSharp.Azure.DocumentDbTypeProvider"
@@ -18,8 +19,27 @@ let releaseNotes = "This package is still in development"
 let deploymentsDir = "./.deploy/"
 let buildDir = "./.build/"
 let binDir = "./bin/"
-let testAcUri = environVar "test_acc_uri"
-let testAcKey = environVar "test_acc_key"
+let testAcUri = 
+    match environVarOrNone "test_acc_uri" with
+    | Some v -> v
+    | None -> 
+        let cfgLine = 
+            "AzureDocumentDbTypeProvider.Tests\AzureDocumentDbTypeProvider.Tests\TestAccountConfig.fs"
+            |> File.ReadAllLines
+            |> Seq.find(fun l -> l.Contains("let AccountEndpointUri = "))
+        cfgLine.Replace("let AccountEndpointUri = ","").Replace("\"","").Trim()
+
+        
+
+let testAcKey = 
+    match environVarOrNone "test_acc_key" with
+    | Some v -> v
+    | None -> 
+        let cfgLine = 
+            "AzureDocumentDbTypeProvider.Tests\AzureDocumentDbTypeProvider.Tests\TestAccountConfig.fs"
+            |> File.ReadAllLines
+            |> Seq.find(fun l -> l.Contains("let AccountKey = "))
+        cfgLine.Replace("let AccountKey = ","").Replace("\"","").Trim()
 
 let packageFiles = [
     buildDir + "AzureDocumentDbTypeProvider.dll"

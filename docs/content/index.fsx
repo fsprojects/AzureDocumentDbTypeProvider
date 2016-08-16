@@ -32,13 +32,28 @@ open FSharp.Azure.DocumentDbTypeProvider
 type Tp = DocumentDbTypeProvider<"https://mydbaccount.documents.azure.com:443/","TheAccountKeyFromTheAzurePortal==">
 
 (**
-we can then get intellisense for the databases in our account like so:
-![alt text](img/DbCapture.PNG "DocumentDb intellisense list")
+
+<div class="row">
+  <div class="span1"></div>
+  <div class="span6">
+  We explore the databases in our DocumentDb account like so:
+    <div class="well well-small" id="nuget">
+      <img src = "img/DbCapture.PNG">
+    </div>
+  </div>
+  <div class="span1"></div>
+</div>
 
 We can get a handle on the SDK db object with:
 *)
 
-let catDbObj = Tp.Databases.Catalogue.ReadDatabase
+let catalogueDb = Tp.Databases.Catalogue.ReadDatabase
+
+(**
+and access our collections with:
+*)
+
+let partsCollection = Tp.Databases.Catalogue.Collections.Parts
 
 
 (**
@@ -68,9 +83,9 @@ The library is available under Public Domain license, which allows modification 
 redistribution for both commercial and non-commercial purposes. For more information see the 
 [License file][license] in the GitHub repository. 
 
-  [content]: https://github.com/fsprojects/AzureDocumentDbTypeprovider/tree/master/docs/content
-  [gh]: https://github.com/fsprojects/AzureDocumentDbTypeprovider
-  [issues]: https://github.com/fsprojects/AzureDocumentDbTypeprovider/issues
-  [readme]: https://github.com/fsprojects/AzureDocumentDbTypeprovider/blob/master/README.md
-  [license]: https://github.com/fsprojects/AzureDocumentDbTypeprovider/blob/master/LICENSE.txt
+  [content]: https://github.com/stewart-r/AzureDocumentDbTypeprovider/tree/master/docs/content
+  [gh]: https://github.com/stewart-r/AzureDocumentDbTypeprovider
+  [issues]: https://github.com/stewart-r/AzureDocumentDbTypeprovider/issues
+  [readme]: https://github.com/stewart-r/AzureDocumentDbTypeprovider/blob/master/README.md
+  [license]: https://github.com/stewart-r/AzureDocumentDbTypeprovider/blob/master/LICENSE.txt
 *)
