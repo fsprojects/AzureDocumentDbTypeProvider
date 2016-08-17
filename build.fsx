@@ -19,6 +19,7 @@ let releaseNotes = "This package is still in development"
 let deploymentsDir = "./.deploy/"
 let buildDir = "./.build/"
 let binDir = "./bin/"
+
 let testAcUri = 
     match environVarOrNone "test_acc_uri" with
     | Some v -> v
@@ -28,8 +29,6 @@ let testAcUri =
             |> File.ReadAllLines
             |> Seq.find(fun l -> l.Contains("let AccountEndpointUri = "))
         cfgLine.Replace("let AccountEndpointUri = ","").Replace("\"","").Trim()
-
-        
 
 let testAcKey = 
     match environVarOrNone "test_acc_key" with
